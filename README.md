@@ -7,10 +7,9 @@ RakuOS Atomic image with pure Hyprland — built on top of `rakuos-base-v3-nvidi
 Rolling release means the system is **always up to date** — no waiting for major version upgrades. Every time you update, you get the latest packages, kernel, and security patches.
 
 ```
-RakuOS staging (upstream updates)
+RakuOS staging (upstream base)
     ↓
-rakuos-base → monitor upstream base → check if safe?
-rakuos-hyprland (main) → build → GHCR → bootc switch
+rakuos-hyprland:main → build (pull latest staging) → GHCR → bootc upgrade
 ```
 
 ## Why Hyprland?
@@ -126,7 +125,8 @@ podman push ghcr.io/tofan79/rakuos-hyprland:latest
 | Tag | Description |
 |---|---|
 | `latest` | Always latest build |
-| `<commit-sha>` | Specific version |
+| `latest.YYYYMMDD` | Latest build + date |
+| `YYYYMMDD` | Specific date (rollback) |
 
 ## Commands
 
@@ -135,7 +135,8 @@ podman push ghcr.io/tofan79/rakuos-hyprland:latest
 | Trigger build | `git push origin main` |
 | Manual build | GitHub Actions → Run workflow |
 | Install | `sudo bootc switch ghcr.io/tofan79/rakuos-hyprland:latest` |
-| Update | Pull from upstream → build → bootc switch |
+| Update | `sudo bootc upgrade` |
+| Rollback | `sudo bootc switch ghcr.io/tofan79/rakuos-hyprland:YYYYMMDD` |
 
 ## Services Enabled
 
