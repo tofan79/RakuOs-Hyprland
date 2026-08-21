@@ -10,7 +10,7 @@ Rolling release means the system is **always up to date** — no waiting for maj
 RakuOS staging (upstream updates)
     ↓
 rakuos-base → monitor staging → check if safe?
-rakuos-niri → monitor staging → check changes → sync custom
+rakuos-niri → monitor upstream niri → check changes → sync custom
     ↓
 rakuos-hyprland (main) → build → GHCR → bootc switch
 ```
