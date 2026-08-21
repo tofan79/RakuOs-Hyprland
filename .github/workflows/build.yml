@@ -7,7 +7,7 @@ on:
     branches: [main]
   workflow_dispatch:
   schedule:
-    - cron: "0 0 * * 0"
+    - cron: "0 17 * * 4"
 
 env:
   REGISTRY: ghcr.io
@@ -52,3 +52,36 @@ jobs:
           podman push ghcr.io/${{ env.IMAGE_NAME }}:latest
           podman push ghcr.io/${{ env.IMAGE_NAME }}:latest.${DATE_TAG}
           podman push ghcr.io/${{ env.IMAGE_NAME }}:${DATE_TAG}
+
+      - name: Cleanup old images (keep last 3)
+        if: github.event_name != 'pull_request'
+        run: |
+          echo "Listing current tags..."
+          TAGS=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            "https://ghcr.io/v2/${{ env.IMAGE_NAME }}/tags/list" | \
+            jq -r '.tags[]' | sort -r)
+
+          # Count date tags (format: YYYYMMDD) - skip :latest and latest.YYYYMMDD
+          DATE_TAGS=$(echo "$TAGS" | grep -E "^[0-9]{8}$" | head -n 4)
+
+          echo "Found date tags: $DATE_TAGS"
+
+          # Keep only first 3, delete the rest
+          KEEP=$(echo "$DATE_TAGS" | head -n 3)
+          DELETE=$(echo "$DATE_TAGS" | tail -n +4)
+
+          for TAG in $DELETE; do
+            echo "Deleting old tag: $TAG"
+            # Get manifest digest
+            DIGEST=$(curl -s -I -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+              -H "Accept: application/vnd.oci.image.index.v1+json" \
+              "https://ghcr.io/v2/${{ env.IMAGE_NAME }}/manifests/$TAG" | \
+              grep -i "docker-content-digest" | awk '{print $2}' | tr -d '\r')
+            if [ -n "$DIGEST" ]; then
+              curl -s -X DELETE \
+                -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+                "https://ghcr.io/v2/${{ env.IMAGE_NAME }}/manifests/$DIGEST"
+              echo "  Deleted $TAG (digest: $DIGEST)"
+            fi
+          done
+          echo "Cleanup done. Kept tags: $KEEP"
