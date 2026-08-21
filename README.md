@@ -57,7 +57,7 @@ The base image is clean — install what you need, skip what you don't.
 
 ### Step 1: Install RakuOS
 
-Download and install [RakuOS](https://rakuos.org/download) from the official installer. Choose any desktop edition (GNOME, KDE, or Niri) — it doesn't matter, because we'll switch to Hyprland later.
+Download and install [RakuOS](https://rakuos.org/download) from the official installer. Choose any desktop edition (GNOME, KDE, or Niri) — we'll replace it with Hyprland later.
 
 ### Step 2: Switch to RakuOS Hyprland
 
