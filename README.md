@@ -9,9 +9,7 @@ Rolling release means the system is **always up to date** — no waiting for maj
 ```
 RakuOS staging (upstream updates)
     ↓
-rakuos-base → monitor staging → check if safe?
-rakuos-niri → monitor upstream niri → check changes → sync custom
-    ↓
+rakuos-base → monitor upstream base → check if safe?
 rakuos-hyprland (main) → build → GHCR → bootc switch
 ```
 
@@ -57,7 +55,7 @@ The base image is clean — install what you need, skip what you don't.
 
 ### Step 1: Install RakuOS
 
-Download and install [RakuOS](https://rakuos.org/download) from the official installer. Choose any desktop edition (GNOME, KDE, or Niri) — we'll replace it with Hyprland later.
+Download and install [RakuOS](https://rakuos.org/download) from the official installer. Choose any desktop edition — we'll replace it with Hyprland later.
 
 ### Step 2: Switch to RakuOS Hyprland
 
