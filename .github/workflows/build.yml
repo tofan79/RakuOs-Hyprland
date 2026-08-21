@@ -38,7 +38,6 @@ jobs:
             --build-arg RAKUOS_STAGING=1 \
             -f Containerfile.nvidia \
             -t ghcr.io/${{ env.IMAGE_NAME }}:latest \
-            -t ghcr.io/${{ env.IMAGE_NAME }}:staging \
             -t ghcr.io/${{ env.IMAGE_NAME }}:${{ github.sha }} \
             .
 
@@ -46,5 +45,4 @@ jobs:
         if: github.event_name != 'pull_request'
         run: |
           podman push ghcr.io/${{ env.IMAGE_NAME }}:latest
-          podman push ghcr.io/${{ env.IMAGE_NAME }}:staging
           podman push ghcr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
