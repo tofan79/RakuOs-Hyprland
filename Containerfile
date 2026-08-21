@@ -1,6 +1,6 @@
 # Global build arg — available to all FROM lines for image tag resolution.
 # Must NOT have ENV here; ENV is a layer instruction and cannot precede FROM.
-ARG BASE_IMAGE_TAG="${BASE_IMAGE_TAG:-latest}"
+ARG BASE_IMAGE_TAG="${BASE_IMAGE_TAG:-staging}"
 ARG BASE_IMAGE_REPO="quay.io/rakuos/rakuos-base"
 ARG CHUNKAH_CONFIG_STR
 
@@ -8,14 +8,12 @@ ARG CHUNKAH_CONFIG_STR
 FROM scratch AS ctx
 COPY build_files /
 
-# Pull the RakuOS base image from the GitLab Container Registry.
+# Pull the RakuOS base image from Quay.io.
 # BASE_IMAGE_TAG is re-declared inside this stage (ARG values defined before
 # the first FROM must be re-declared in each stage that needs them).
 FROM ${BASE_IMAGE_REPO}:${BASE_IMAGE_TAG} AS builder
 ARG BASE_IMAGE_TAG
 ENV BASE_IMAGE_TAG=${BASE_IMAGE_TAG}
-# Set by CI to "1" on the staging branch so build.sh installs the
-# rakuos-release-<de>-staging variant instead of rakuos-release-<de>.
 ARG RAKUOS_STAGING="0"
 ENV RAKUOS_STAGING=${RAKUOS_STAGING}
 COPY system_files /
