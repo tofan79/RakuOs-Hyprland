@@ -34,15 +34,19 @@ jobs:
 
       - name: Build NVIDIA image
         run: |
+          DATE_TAG=$(date -u +%Y%m%d)
           podman build \
             --build-arg RAKUOS_STAGING=1 \
             -f Containerfile.nvidia \
             -t ghcr.io/${{ env.IMAGE_NAME }}:latest \
-            -t ghcr.io/${{ env.IMAGE_NAME }}:${{ github.sha }} \
+            -t ghcr.io/${{ env.IMAGE_NAME }}:latest.${DATE_TAG} \
+            -t ghcr.io/${{ env.IMAGE_NAME }}:${DATE_TAG} \
             .
 
       - name: Push to GitHub Container Registry
         if: github.event_name != 'pull_request'
         run: |
+          DATE_TAG=$(date -u +%Y%m%d)
           podman push ghcr.io/${{ env.IMAGE_NAME }}:latest
-          podman push ghcr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          podman push ghcr.io/${{ env.IMAGE_NAME }}:latest.${DATE_TAG}
+          podman push ghcr.io/${{ env.IMAGE_NAME }}:${DATE_TAG}
