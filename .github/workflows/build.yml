@@ -40,6 +40,7 @@ jobs:
           podman build \
             --build-arg RAKUOS_STAGING=1 \
             -f Containerfile.nvidia \
+            -v "$(pwd)":/run/src \
             -t ghcr.io/${{ env.IMAGE_NAME }}:latest \
             -t ghcr.io/${{ env.IMAGE_NAME }}:latest.${DATE_TAG} \
             -t ghcr.io/${{ env.IMAGE_NAME }}:${DATE_TAG} \
