@@ -44,7 +44,7 @@ rum install -y \
 rm -r /usr/share/backgrounds/fedora-workstation/
 
 ## Remove fish shell and wofi (not needed with Noctalia)
-dnf5 remove -y fish wofi firefox hyprpicker grimblast || true
+dnf5 remove -y fish wofi hyprpicker grimblast || true
 
 ## Unlock keyring on login
 sed -i -E 's/^-([a-z]+[[:space:]]+.*pam_gnome_keyring\.so)/\1/' /etc/pam.d/sddm
