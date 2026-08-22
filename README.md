@@ -1,152 +1,132 @@
-# rakuos-hyprland
+# RakuOS Hyprland
 
-RakuOS Atomic image with pure Hyprland — built on top of `rakuos-base-v3-nvidia`.
+Custom RakuOS atomic image: pure Hyprland + NVIDIA, built on `rakuos-base-v3:staging`.
 
-## What is Rolling Release?
+## Features
 
-Rolling release means the system is **always up to date** — no waiting for major version upgrades. Every time you update, you get the latest packages, kernel, and security patches.
-
-```
-RakuOS staging (upstream base)
-    ↓
-rakuos-hyprland:main → build (pull latest staging) → GHCR → bootc upgrade
-```
-
-## Why Hyprland?
-
-Hyprland is a dynamic tiling Wayland compositor that's fast, customizable, and modern. This image ships with a **minimal Hyprland setup** — just the core compositor, display manager, and essential tools.
-
-**You choose your shell.** After installation, customize your desktop with:
-
-- **Noctalia** — All-in-one bar, launcher, notifications, wallpaper
-- **DankLinux** / **Celestia Shell** — Alternative shell experiences
-- **Waybar** + **Wofi** + **Mako** — Classic Hyprland stack
-- **AGS** — Custom widget system
-
-The base image is clean — install what you need, skip what you don't.
-
-## What's Inside
-
-| Category | Packages |
-|---|---|
-| **Hyprland Core** | hyprland, cliphist, xdg-desktop-portal-hyprland, xwayland-satellite |
-| **Display Manager** | sddm, sddm-kcm |
-| **Screenshot & OCR** | grim, slurp, satty, tesseract, tesseract-data-eng, zbar |
-| **Gaming** | switcherooctl, switcheroo-control, gamemode, mangohud |
-| **Dev Tools** | @development-tools, cmake, meson, ninja-build |
-| **CLI Essentials** | fd-find, tree, bc, lsof, hwinfo, smartmontools, wget2, eza, dua-cli |
-| **Hardware & Power** | brightnessctl, ddcutil, power-profiles-daemon |
-| **Media** | playerctl, pamixer, alsa-utils, gstreamer1-plugins-*, x264, x265 |
-| **Display & Theming** | wlsunset, qt5ct, qt6ct, qt6-wayland, papirus-icon-theme, tela-icon-theme |
-| **File System** | exfatprogs, ntfs-3g, btrfs-progs, cifs-utils, dosfstools |
-| **Fonts** | jetbrains-mono-fonts, google-noto-color-emoji-fonts, adobe-source-code-pro-fonts |
-| **System** | dbus-tools, logrotate, gnome-keyring, networkmanager-openvpn, zram-generator-defaults |
-| **Network** | NetworkManager-adsl, NetworkManager-bluetooth, NetworkManager-ppp, NetworkManager-wwan |
-| **Terminal & Apps** | ghostty, ghostty-nautilus, nautilus |
+- Hyprland compositor (Wayland)
+- NVIDIA drivers (DKMS, hybrid GPU)
+- SDDM display manager
+- Rolling release via GitHub Actions (auto-build every Friday)
 
 ## Installation
 
-### Prerequisites
-
-- Laptop with UEFI firmware
-- Internet connection
-- At least 20GB free space
-
-### Step 1: Install RakuOS
-
-Download and install [RakuOS](https://rakuos.org/download) from the official installer. Choose any desktop edition — we'll replace it with Hyprland later.
-
-### Step 2: Switch to RakuOS Hyprland
-
 ```bash
+# First time (switch from official RakuOS)
 sudo bootc switch ghcr.io/tofan79/rakuos-hyprland:latest
+
+# After that, updates are automatic
+sudo rakuos update
 ```
 
-### Step 3: Reboot
+## Gaming Setup
+
+After first boot, install gaming packages manually:
 
 ```bash
-sudo reboot
+rum install -y \
+  gamemode mangohud \
+  steam steam-devices gamescope heroic-games-launcher \
+  wine winetricks protontricks vulkan-tools goverlay
 ```
 
-### Step 4: Login
+### Packages included:
+- **gamemode** - Performance optimizer for games
+- **mangohud** - FPS/hardware monitoring overlay
+- **steam** - Steam client
+- **steam-devices** - Controller support
+- **gamescope** - Micro-compositor for games
+- **heroic-games-launcher** - Epic/GOG/Amazon launcher
+- **wine** - Windows compatibility layer
+- **winetricks** - Wine helper scripts
+- **protontricks** - Proton/Steam Play helper
+- **vulkan-tools** - Vulkan utilities (vkcube, etc)
+- **goverlay** - GUI for MangoHud configuration
 
-1. SDDM login screen appears
-2. Login with your credentials
-3. Hyprland starts automatically
+### Gaming Environment Variables (add to Hyprland config)
 
-## Customization
+```lua
+env = [
+  LIBVA_DRIVER_NAME,radeonsi
+  __GLX_VENDOR_LIBRARY_NAME,nvidia
+  GBM_BACKEND,nvidia-drm
+  NVD_BACKEND,direct
+  MOZ_ENABLE_WAYLAND,1
+  QT_QPA_PLATFORM,wayland
+  QT_QPA_PLATFORMTHEME,qt6ct
+  XDG_SESSION_TYPE,wayland
+  XDG_CURRENT_DESKTOP,Hyprland
+  GDK_BACKEND,wayland,x11
+  QT_WAYLAND_DISABLE_WINDOWDECORATION,1
+  _JAVA_AWT_WM_NONREPARENTING,1
+  WLR_NO_HARDWARE_CURSORS,1
+  WLR_RENDERER vulkan
+  SDL_VIDEODRIVER,wayland
+  CLUTTER_BACKEND,wayland
+  ELECTRON_OZONE_PLATFORM_HINT,auto
+```
 
-### Install your shell
+## Pre-installed Packages
+
+### Core Hyprland
+- hyprland, cliphist, xdg-desktop-portal-hyprland
+- hyprland-contrib, hyprland-qt-support, hyprsysteminfo, hyprtoolkit
+- gpu-screen-recorder, nwg-look, matugen
+
+### Display Manager
+- sddm, sddm-kcm
+
+### Screenshot & OCR
+- grim, slurp, tesseract, tesseract-langpack-eng, zbar
+
+### Dev Tools
+- @development-tools, cmake, meson, ninja-build
+
+### System Tools
+- fd-find, tree, bc, lsof, hwinfo, smartmontools, wget2
+
+### Hardware & Power
+- switcheroo-control, brightnessctl, ddcutil, power-profiles-daemon
+
+### Network
+- NetworkManager-openvpn, NetworkManager-adsl, NetworkManager-bluetooth, NetworkManager-ppp, NetworkManager-wwan
+
+### System
+- dbus-tools, logrotate, gnome-keyring, systemd-oomd-defaults
+- xdg-desktop-portal, xdg-desktop-portal-gtk, xdg-user-dirs-gtk
+
+### Media
+- playerctl, alsa-utils, pavucontrol
+- gstreamer1-plugins-base/good/bad-free/ugly-free/libav
+- x264, x265
+
+### Theming
+- qt5ct, qt6ct, qt6-qtwayland, papirus-icon-theme
+
+### Filesystem
+- exfatprogs, ntfs-3g, btrfs-progs, cifs-utils, dosfstools
+
+### Fonts
+- jetbrains-mono-fonts, google-noto-color-emoji-fonts, adobe-source-code-pro-fonts
+
+### Terminal
+- zsh (uwsm-terminal bawaan base)
+
+### RakuOS
+- rakuos-release, rakuos-software-gtk, rakuos-welcome-gtk
+
+## Development
+
+Build locally with Podman:
 
 ```bash
-# Noctalia (all-in-one bar, launcher, notifications)
-sudo rum install noctalia
-
-# Hyprland extras
-sudo rum install hyprlock hypridle hyprpaper
-
-# Waybar stack
-sudo rum install waybar wofi mako
+podman build \
+  --build-arg RAKUOS_STAGING=1 \
+  -f Containerfile.nvidia \
+  -t rakuos-hyprland:latest \
+  .
 ```
 
-### Install flatpak apps
+## License
 
-```bash
-flatpak install flathub com.spotify.Client
-flatpak install flathub org.mozilla.firefox
-flatpak install flathub io.github.nickvision.money
-```
-
-## Building from Source
-
-### Prerequisites
-
-- Podman or Docker
-- Git
-
-### Build
-
-```bash
-git clone https://github.com/tofan79/rakuos-hyprland.git
-cd rakuos-hyprland
-
-# Build NVIDIA image
-podman build -f Containerfile.nvidia -t rakuos-hyprland .
-```
-
-### Push to registry
-
-```bash
-podman push ghcr.io/tofan79/rakuos-hyprland:latest
-```
-
-## Image Tags
-
-| Tag | Description |
-|---|---|
-| `latest` | Always latest build |
-| `latest.YYYYMMDD` | Latest build + date |
-| `YYYYMMDD` | Specific date (rollback) |
-
-## Commands
-
-| Task | Command |
-|---|---|
-| Trigger build | `git push origin main` |
-| Manual build | GitHub Actions → Run workflow |
-| Install | `sudo bootc switch ghcr.io/tofan79/rakuos-hyprland:latest` |
-| Update | `sudo bootc upgrade` |
-| Rollback | `sudo bootc switch ghcr.io/tofan79/rakuos-hyprland:YYYYMMDD` |
-
-## Services Enabled
-
-| Service | Description |
-|---|---|
-| `sddm` | Display manager |
-| `bluetooth` | Bluetooth support |
-| `switcheroo-control` | GPU switching (hybrid NVIDIA) |
-| `tuned` | Power management |
-
-## Credits
-
-Based on [RakuOS](https://rakuos.org) base images. Licensed under [Apache License 2.0](LICENSE).
+See [LICENSE](LICENSE) for details.

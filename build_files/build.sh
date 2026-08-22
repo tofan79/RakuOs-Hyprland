@@ -36,22 +36,20 @@ rum install -y \
   hyprsysteminfo hyprtoolkit gpu-screen-recorder nwg-look matugen \
   sddm sddm-kcm \
   grim slurp tesseract tesseract-langpack-eng zbar \
-  switcheroo-control gamemode mangohud \
-  steam steam-devices gamescope heroic-games-launcher \
-  wine winetricks protontricks vulkan-tools goverlay \
+  switcheroo-control \
   @development-tools cmake meson ninja-build \
-  fd-find tree bc lsof hwinfo smartmontools wget2 eza dua-cli \
+  fd-find tree bc lsof hwinfo smartmontools wget2 \
   brightnessctl ddcutil power-profiles-daemon \
   playerctl alsa-utils pavucontrol \
   gstreamer1-plugins-base gstreamer1-plugins-good \
   gstreamer1-plugins-bad-free gstreamer1-plugins-ugly-free gstreamer1-plugin-libav \
   x264 x265 \
-  wlsunset qt5ct qt6ct qt6-qtwayland papirus-icon-theme \
+  qt5ct qt6ct qt6-qtwayland papirus-icon-theme \
   exfatprogs ntfs-3g btrfs-progs cifs-utils dosfstools \
   jetbrains-mono-fonts google-noto-color-emoji-fonts adobe-source-code-pro-fonts \
   dbus-tools logrotate gnome-keyring NetworkManager-openvpn \
   NetworkManager-adsl NetworkManager-bluetooth NetworkManager-ppp NetworkManager-wwan \
-  zsh kitty nautilus neovim \
+  zsh \
   ${RAKUOS_RELEASE_PKG} rakuos-software-gtk rakuos-welcome-gtk \
   systemd-oomd-defaults xdg-desktop-portal xdg-desktop-portal-gtk xdg-user-dirs-gtk
 

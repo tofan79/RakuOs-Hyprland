@@ -134,17 +134,6 @@ tesseract
 tesseract-langpack-eng
 zbar
 switcheroo-control
-gamemode
-mangohud
-steam
-steam-devices
-gamescope
-heroic-games-launcher
-wine
-winetricks
-protontricks
-vulkan-tools
-goverlay
 cmake
 meson
 ninja-build
@@ -155,8 +144,6 @@ lsof
 hwinfo
 smartmontools
 wget2
-eza
-dua-cli
 brightnessctl
 ddcutil
 power-profiles-daemon
@@ -170,7 +157,6 @@ gstreamer1-plugins-ugly-free
 gstreamer1-plugin-libav
 x264
 x265
-wlsunset
 qt5ct
 qt6ct
 qt6-qtwayland
@@ -192,9 +178,6 @@ NetworkManager-bluetooth
 NetworkManager-ppp
 NetworkManager-wwan
 zsh
-kitty
-nautilus
-neovim
 rakuos-release
 rakuos-software-gtk
 rakuos-welcome-gtk

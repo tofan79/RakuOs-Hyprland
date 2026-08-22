@@ -23,7 +23,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Install Podman
         run: |
@@ -51,7 +51,6 @@ jobs:
             --build-arg RAKUOS_STAGING=1 \
             -f Containerfile.nvidia \
             -t ghcr.io/${{ env.IMAGE_NAME }}:latest \
-            -t ghcr.io/${{ env.IMAGE_NAME }}:latest.${DATE_TAG} \
             -t ghcr.io/${{ env.IMAGE_NAME }}:${DATE_TAG} \
             .
 
@@ -60,10 +59,9 @@ jobs:
         run: |
           DATE_TAG=$(date -u +%Y%m%d)
           podman push ghcr.io/${{ env.IMAGE_NAME }}:latest
-          podman push ghcr.io/${{ env.IMAGE_NAME }}:latest.${DATE_TAG}
           podman push ghcr.io/${{ env.IMAGE_NAME }}:${DATE_TAG}
 
-      - name: Cleanup old images (keep last 3)
+      - name: Cleanup old images (keep last 30 days)
         if: github.event_name != 'pull_request'
         run: |
           echo "Listing current tags..."
@@ -71,27 +69,29 @@ jobs:
             "https://ghcr.io/v2/${{ env.IMAGE_NAME }}/tags/list" | \
             jq -r '.tags[]' | sort -r)
 
-          # Count date tags (format: YYYYMMDD) - skip :latest and latest.YYYYMMDD
-          DATE_TAGS=$(echo "$TAGS" | grep -E "^[0-9]{8}$" | head -n 4)
+          # Get cutoff date (30 days ago)
+          CUTOFF=$(date -u -d "30 days ago" +%Y%m%d)
+          echo "Cutoff date: $CUTOFF"
+
+          # Count date tags (format: YYYYMMDD) - skip :latest
+          DATE_TAGS=$(echo "$TAGS" | grep -E "^[0-9]{8}$")
 
           echo "Found date tags: $DATE_TAGS"
 
-          # Keep only first 3, delete the rest
-          KEEP=$(echo "$DATE_TAGS" | head -n 3)
-          DELETE=$(echo "$DATE_TAGS" | tail -n +4)
-
-          for TAG in $DELETE; do
-            echo "Deleting old tag: $TAG"
-            # Get manifest digest
-            DIGEST=$(curl -s -I -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-              -H "Accept: application/vnd.oci.image.index.v1+json" \
-              "https://ghcr.io/v2/${{ env.IMAGE_NAME }}/manifests/$TAG" | \
-              grep -i "docker-content-digest" | awk '{print $2}' | tr -d '\r')
-            if [ -n "$DIGEST" ]; then
-              curl -s -X DELETE \
-                -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-                "https://ghcr.io/v2/${{ env.IMAGE_NAME }}/manifests/$DIGEST"
-              echo "  Deleted $TAG (digest: $DIGEST)"
+          # Delete tags older than 30 days
+          for TAG in $DATE_TAGS; do
+            if [ "$TAG" -lt "$CUTOFF" ]; then
+              echo "Deleting old tag: $TAG"
+              DIGEST=$(curl -s -I -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+                -H "Accept: application/vnd.oci.image.index.v1+json" \
+                "https://ghcr.io/v2/${{ env.IMAGE_NAME }}/manifests/$TAG" | \
+                grep -i "docker-content-digest" | awk '{print $2}' | tr -d '\r')
+              if [ -n "$DIGEST" ]; then
+                curl -s -X DELETE \
+                  -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+                  "https://ghcr.io/v2/${{ env.IMAGE_NAME }}/manifests/$DIGEST"
+                echo "  Deleted $TAG (digest: $DIGEST)"
+              fi
             fi
           done
-          echo "Cleanup done. Kept tags: $KEEP"
+          echo "Cleanup done."
