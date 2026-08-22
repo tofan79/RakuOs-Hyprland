@@ -63,35 +63,48 @@ jobs:
 
       - name: Cleanup old images (keep last 30 days)
         if: github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "Listing current tags..."
-          TAGS=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            "https://ghcr.io/v2/${{ env.IMAGE_NAME }}/tags/list" | \
-            jq -r '.tags[]' | sort -r)
+          set -euo pipefail
 
-          # Get cutoff date (30 days ago)
+          PACKAGE="rakuos-hyprland"
+          OWNER="tofan79"
           CUTOFF=$(date -u -d "30 days ago" +%Y%m%d)
-          echo "Cutoff date: $CUTOFF"
 
-          # Count date tags (format: YYYYMMDD) - skip :latest
-          DATE_TAGS=$(echo "$TAGS" | grep -E "^[0-9]{8}$")
+          echo "Today:  $(date -u +%Y%m%d)"
+          echo "Cutoff: $CUTOFF"
+          echo "Checking old package versions..."
 
-          echo "Found date tags: $DATE_TAGS"
+          gh api \
+            --paginate \
+            "/users/${OWNER}/packages/container/${PACKAGE}/versions?per_page=100" \
+            --jq '.[] | [.id, (.metadata.container.tags // [])[]] | @tsv' |
+          while IFS=$'\t' read -r VERSION_ID TAG; do
 
-          # Delete tags older than 30 days
-          for TAG in $DATE_TAGS; do
-            if [ "$TAG" -lt "$CUTOFF" ]; then
-              echo "Deleting old tag: $TAG"
-              DIGEST=$(curl -s -I -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-                -H "Accept: application/vnd.oci.image.index.v1+json" \
-                "https://ghcr.io/v2/${{ env.IMAGE_NAME }}/manifests/$TAG" | \
-                grep -i "docker-content-digest" | awk '{print $2}' | tr -d '\r')
-              if [ -n "$DIGEST" ]; then
-                curl -s -X DELETE \
-                  -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-                  "https://ghcr.io/v2/${{ env.IMAGE_NAME }}/manifests/$DIGEST"
-                echo "  Deleted $TAG (digest: $DIGEST)"
-              fi
+            # Jangan pernah hapus latest
+            if [ "$TAG" = "latest" ]; then
+              echo "Keeping: latest"
+              continue
             fi
+
+            # Hanya proses tag YYYYMMDD
+            if [[ "$TAG" =~ ^[0-9]{8}$ ]]; then
+
+              if [ "$TAG" -lt "$CUTOFF" ]; then
+                echo "Deleting old tag: $TAG (version: $VERSION_ID)"
+
+                gh api \
+                  --method DELETE \
+                  "/users/${OWNER}/packages/container/${PACKAGE}/versions/${VERSION_ID}"
+
+                echo "Deleted: $TAG"
+              else
+                echo "Keeping: $TAG"
+              fi
+
+            fi
+
           done
+
           echo "Cleanup done."
