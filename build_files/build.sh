@@ -26,9 +26,13 @@ for repo_file in /etc/yum.repos.d/_copr_mindset-Mindset-Apps.repo /etc/yum.repos
     [[ -f "$repo_file" ]] && sed -i 's/^priority=.*/priority=20/' "$repo_file"
 done
 
+## Remove fish shell and wofi (not needed with Noctalia)
+dnf5 remove -y fish wofi || true
+
 ## Install packages — Pure Hyprland edition
 rum install -y \
-  hyprland cliphist xdg-desktop-portal-hyprland xwayland-satellite \
+  hyprland noctalia cliphist xdg-desktop-portal-hyprland xwayland-satellite \
+  hyprland-contrib hypridle hyprlock hyprpolkitagent hyprland-qt-support \
   sddm sddm-kcm \
   grim slurp tesseract tesseract-langpack-eng zbar \
   switcheroo-control gamemode mangohud \
@@ -44,7 +48,7 @@ rum install -y \
   jetbrains-mono-fonts google-noto-color-emoji-fonts adobe-source-code-pro-fonts \
   dbus-tools logrotate gnome-keyring NetworkManager-openvpn \
   NetworkManager-adsl NetworkManager-bluetooth NetworkManager-ppp NetworkManager-wwan \
-  kitty nautilus \
+  zsh kitty nautilus \
   ${RAKUOS_RELEASE_PKG} rakuos-software-gtk rakuos-welcome-gtk \
   systemd-oomd-defaults xdg-desktop-portal xdg-desktop-portal-gtk xdg-user-dirs-gtk
 
