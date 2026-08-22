@@ -30,21 +30,21 @@ done
 rum install -y \
   hyprland cliphist xdg-desktop-portal-hyprland xwayland-satellite \
   sddm sddm-kcm \
-  grim slurp satty tesseract tesseract-langpack-eng zbar \
+  grim slurp tesseract tesseract-langpack-eng zbar \
   switcheroo-control gamemode mangohud \
   @development-tools cmake meson ninja-build \
   fd-find tree bc lsof hwinfo smartmontools wget2 eza dua-cli \
   brightnessctl ddcutil power-profiles-daemon \
-  playerctl pamixer alsa-utils \
+  playerctl alsa-utils \
   gstreamer1-plugins-base gstreamer1-plugins-good \
   gstreamer1-plugins-bad-free gstreamer1-plugins-ugly-free gstreamer1-plugin-libav \
   x264 x265 \
-  wlsunset qt5ct qt6ct qt6-wayland papirus-icon-theme tela-icon-theme \
+  wlsunset qt5ct qt6ct qt6-qtwayland papirus-icon-theme \
   exfatprogs ntfs-3g btrfs-progs cifs-utils dosfstools \
   jetbrains-mono-fonts google-noto-color-emoji-fonts adobe-source-code-pro-fonts \
   dbus-tools logrotate gnome-keyring networkmanager-openvpn zram-generator-defaults \
   NetworkManager-adsl NetworkManager-bluetooth NetworkManager-ppp NetworkManager-wwan \
-  ghostty ghostty-nautilus nautilus \
+  kitty nautilus \
   ${RAKUOS_RELEASE_PKG} rakuos-software-gtk rakuos-welcome-gtk \
   systemd-oomd-defaults xdg-desktop-portal xdg-desktop-portal-gtk xdg-user-dirs-gtk
 
