@@ -34,7 +34,17 @@ jobs:
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | podman login ghcr.io -u ${{ github.actor }} --password-stdin
 
+      - name: Build PR smoke image
+        if: github.event_name == 'pull_request'
+        run: |
+          podman build \
+            --target ctx \
+            -f Containerfile.nvidia \
+            -t ghcr.io/${{ env.IMAGE_NAME }}:pr-smoke \
+            .
+
       - name: Build NVIDIA image
+        if: github.event_name != 'pull_request'
         run: |
           DATE_TAG=$(date -u +%Y%m%d)
           podman build \
