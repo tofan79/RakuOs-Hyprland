@@ -30,7 +30,7 @@ done
 rum install -y \
   hyprland cliphist xdg-desktop-portal-hyprland xwayland-satellite \
   sddm sddm-kcm \
-  grim slurp satty tesseract tesseract-data-eng zbar \
+  grim slurp satty tesseract tesseract-langpack-eng zbar \
   switcherooctl switcheroo-control gamemode mangohud \
   @development-tools cmake meson ninja-build \
   fd-find tree bc lsof hwinfo smartmontools wget2 eza dua-cli \
