@@ -31,15 +31,18 @@ dnf5 remove -y fish wofi || true
 
 ## Install packages — Pure Hyprland edition
 rum install -y \
-  hyprland noctalia cliphist xdg-desktop-portal-hyprland xwayland-satellite \
-  hyprland-contrib hypridle hyprlock hyprpolkitagent hyprland-qt-support \
+  hyprland cliphist xdg-desktop-portal-hyprland \
+  hyprland-contrib hyprland-qt-support \
+  hyprsysteminfo hyprtoolkit gpu-screen-recorder nwg-look matugen \
   sddm sddm-kcm \
   grim slurp tesseract tesseract-langpack-eng zbar \
   switcheroo-control gamemode mangohud \
+  steam steam-devices gamescope heroic-games-launcher \
+  wine winetricks protontricks vulkan-tools goverlay \
   @development-tools cmake meson ninja-build \
   fd-find tree bc lsof hwinfo smartmontools wget2 eza dua-cli \
   brightnessctl ddcutil power-profiles-daemon \
-  playerctl alsa-utils \
+  playerctl alsa-utils pavucontrol \
   gstreamer1-plugins-base gstreamer1-plugins-good \
   gstreamer1-plugins-bad-free gstreamer1-plugins-ugly-free gstreamer1-plugin-libav \
   x264 x265 \
@@ -48,7 +51,7 @@ rum install -y \
   jetbrains-mono-fonts google-noto-color-emoji-fonts adobe-source-code-pro-fonts \
   dbus-tools logrotate gnome-keyring NetworkManager-openvpn \
   NetworkManager-adsl NetworkManager-bluetooth NetworkManager-ppp NetworkManager-wwan \
-  zsh kitty nautilus \
+  zsh kitty nautilus neovim \
   ${RAKUOS_RELEASE_PKG} rakuos-software-gtk rakuos-welcome-gtk \
   systemd-oomd-defaults xdg-desktop-portal xdg-desktop-portal-gtk xdg-user-dirs-gtk
 
