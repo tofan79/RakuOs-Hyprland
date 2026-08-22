@@ -16,13 +16,10 @@ ARG BASE_IMAGE_TAG
 ENV BASE_IMAGE_TAG=${BASE_IMAGE_TAG}
 ARG RAKUOS_STAGING="0"
 ENV RAKUOS_STAGING=${RAKUOS_STAGING}
-COPY system_files /
 
 RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
     --mount=type=tmpfs,dst=/tmp \
     /ctx/build.sh && /ctx/nvidia.sh && /ctx/post-build.sh && /ctx/post-build-overlay.sh
-
-COPY system_files /
 
 RUN bootc container lint
 
