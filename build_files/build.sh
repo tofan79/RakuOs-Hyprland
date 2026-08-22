@@ -26,19 +26,14 @@ for repo_file in /etc/yum.repos.d/_copr_mindset-Mindset-Apps.repo /etc/yum.repos
     [[ -f "$repo_file" ]] && sed -i 's/^priority=.*/priority=20/' "$repo_file"
 done
 
-## Remove fish shell and wofi (not needed with Noctalia)
-dnf5 remove -y fish wofi || true
-
 ## Install packages — Pure Hyprland edition
 rum install -y \
   hyprland cliphist xdg-desktop-portal-hyprland \
   hyprland-contrib hyprland-qt-support \
   hyprsysteminfo hyprtoolkit gpu-screen-recorder nwg-look matugen \
-  sddm sddm-kcm \
+  sddm \
   grim slurp tesseract tesseract-langpack-eng zbar \
   switcheroo-control \
-  @development-tools cmake meson ninja-build \
-  fd-find tree bc lsof hwinfo smartmontools wget2 \
   brightnessctl ddcutil power-profiles-daemon \
   playerctl alsa-utils pavucontrol \
   gstreamer1-plugins-base gstreamer1-plugins-good \
@@ -55,6 +50,9 @@ rum install -y \
 
 ## Remove fedora wallpapers
 rm -r /usr/share/backgrounds/fedora-workstation/
+
+## Remove fish shell and wofi (not needed with Noctalia)
+dnf5 remove -y fish wofi || true
 
 ## Unlock keyring on login
 sed -i -E 's/^-([a-z]+[[:space:]]+.*pam_gnome_keyring\.so)/\1/' /etc/pam.d/sddm
