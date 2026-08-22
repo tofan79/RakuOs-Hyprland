@@ -34,5 +34,5 @@ RUN --mount=from=builder,src=/,target=/chunkah,ro \
           --label ostree.commit- --label ostree.final-diffid- \
           > /run/src/out.ociarchive
 
-FROM oci-archive:out.ociarchive
+FROM builder
 LABEL containers.bootc=1
