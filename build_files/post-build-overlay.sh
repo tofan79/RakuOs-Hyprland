@@ -124,11 +124,9 @@ sddm
 sddm-kcm
 grim
 slurp
-satty
 tesseract
-tesseract-data-eng
+tesseract-langpack-eng
 zbar
-switcherooctl
 switcheroo-control
 gamemode
 mangohud
@@ -148,7 +146,6 @@ brightnessctl
 ddcutil
 power-profiles-daemon
 playerctl
-pamixer
 alsa-utils
 gstreamer1-plugins-base
 gstreamer1-plugins-good
@@ -160,9 +157,8 @@ x265
 wlsunset
 qt5ct
 qt6ct
-qt6-wayland
+qt6-qtwayland
 papirus-icon-theme
-tela-icon-theme
 exfatprogs
 ntfs-3g
 btrfs-progs
@@ -180,8 +176,7 @@ NetworkManager-adsl
 NetworkManager-bluetooth
 NetworkManager-ppp
 NetworkManager-wwan
-ghostty
-ghostty-nautilus
+kitty
 nautilus
 rakuos-release
 rakuos-software-gtk
