@@ -7,7 +7,7 @@ on:
     branches: [main]
   workflow_dispatch:
   schedule:
-    - cron: "0 17 * * 4"
+    - cron: "0 00 * * 5"
 
 env:
   REGISTRY: ghcr.io
@@ -17,6 +17,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 60
+
     permissions:
       contents: read
       packages: write
@@ -32,8 +33,14 @@ jobs:
 
       - name: Log in to GitHub Container Registry
         run: |
-          echo "${{ secrets.GITHUB_TOKEN }}" | podman login ghcr.io -u ${{ github.actor }} --password-stdin
+          echo "${{ secrets.GITHUB_TOKEN }}" | \
+            podman login ghcr.io \
+            -u "${{ github.actor }}" \
+            --password-stdin
 
+      # ============================================================
+      # Pull Request
+      # ============================================================
       - name: Build PR smoke image
         if: github.event_name == 'pull_request'
         run: |
@@ -43,10 +50,14 @@ jobs:
             -t ghcr.io/${{ env.IMAGE_NAME }}:pr-smoke \
             .
 
+      # ============================================================
+      # Main / Schedule / Manual
+      # ============================================================
       - name: Build NVIDIA image
         if: github.event_name != 'pull_request'
         run: |
           DATE_TAG=$(date -u +%Y%m%d)
+
           podman build \
             --build-arg RAKUOS_STAGING=1 \
             -f Containerfile.nvidia \
@@ -54,13 +65,24 @@ jobs:
             -t ghcr.io/${{ env.IMAGE_NAME }}:${DATE_TAG} \
             .
 
+      # ============================================================
+      # Push image to GHCR
+      # ============================================================
       - name: Push to GitHub Container Registry
         if: github.event_name != 'pull_request'
         run: |
           DATE_TAG=$(date -u +%Y%m%d)
-          podman push ghcr.io/${{ env.IMAGE_NAME }}:latest
-          podman push ghcr.io/${{ env.IMAGE_NAME }}:${DATE_TAG}
 
+          podman push \
+            ghcr.io/${{ env.IMAGE_NAME }}:latest
+
+          podman push \
+            ghcr.io/${{ env.IMAGE_NAME }}:${DATE_TAG}
+
+      # ============================================================
+      # Cleanup images older than 30 days
+      # latest is NEVER deleted
+      # ============================================================
       - name: Cleanup old images (keep last 30 days)
         if: github.event_name != 'pull_request'
         env:
@@ -69,42 +91,71 @@ jobs:
           set -euo pipefail
 
           PACKAGE="rakuos-hyprland"
-          OWNER="tofan79"
           CUTOFF=$(date -u -d "30 days ago" +%Y%m%d)
 
+          echo "========================================"
+          echo "GHCR Cleanup"
+          echo "========================================"
           echo "Today:  $(date -u +%Y%m%d)"
           echo "Cutoff: $CUTOFF"
-          echo "Checking old package versions..."
+          echo ""
+
+          echo "Getting GHCR package versions..."
 
           gh api \
             --paginate \
-            "/users/${OWNER}/packages/container/${PACKAGE}/versions?per_page=100" \
-            --jq '.[] | [.id, (.metadata.container.tags // [])[]] | @tsv' |
-          while IFS=$'\t' read -r VERSION_ID TAG; do
+            "/user/packages/container/${PACKAGE}/versions?per_page=100" \
+            --jq '.[] | [
+              .id,
+              (.metadata.container.tags // [])
+            ] | @json' |
+          while read -r VERSION; do
 
-            # Jangan pernah hapus latest
-            if [ "$TAG" = "latest" ]; then
-              echo "Keeping: latest"
+            VERSION_ID=$(echo "$VERSION" | jq -r '.[0]')
+            TAGS=$(echo "$VERSION" | jq -r '.[1][]?')
+
+            # ------------------------------------------------------
+            # Kalau version ini punya tag latest,
+            # JANGAN PERNAH hapus version tersebut.
+            # ------------------------------------------------------
+            if echo "$TAGS" | grep -qx "latest"; then
+              echo "KEEP: version $VERSION_ID contains latest"
               continue
             fi
 
-            # Hanya proses tag YYYYMMDD
-            if [[ "$TAG" =~ ^[0-9]{8}$ ]]; then
+            # ------------------------------------------------------
+            # Cek setiap tag tanggal
+            # ------------------------------------------------------
+            for TAG in $TAGS; do
 
-              if [ "$TAG" -lt "$CUTOFF" ]; then
-                echo "Deleting old tag: $TAG (version: $VERSION_ID)"
+              # Hanya proses format YYYYMMDD
+              if [[ "$TAG" =~ ^[0-9]{8}$ ]]; then
 
-                gh api \
-                  --method DELETE \
-                  "/users/${OWNER}/packages/container/${PACKAGE}/versions/${VERSION_ID}"
+                if [ "$TAG" -lt "$CUTOFF" ]; then
 
-                echo "Deleted: $TAG"
-              else
-                echo "Keeping: $TAG"
+                  echo "DELETE: $TAG"
+                  echo "       Version ID: $VERSION_ID"
+
+                  gh api \
+                    --method DELETE \
+                    "/user/packages/container/${PACKAGE}/versions/${VERSION_ID}"
+
+                  echo "       Deleted successfully"
+                  echo ""
+
+                else
+
+                  echo "KEEP:   $TAG"
+
+                fi
+
               fi
 
-            fi
+            done
 
           done
 
+          echo ""
+          echo "========================================"
           echo "Cleanup done."
+          echo "========================================"
