@@ -120,20 +120,21 @@ depmod "${QUALIFIED_KERNEL}"
 
 chmod 0600 /usr/lib/modules/"${QUALIFIED_KERNEL}"/initramfs.img
 
-PROTECTED_FILE="/usr/share/share/rakuos/protected-packages.txt"
+PROTECTED_FILE="/usr/share/rakuos/protected-packages.txt"
 
 cat >> "$PROTECTED_FILE" << 'EOF'
 
-# Base image packages (from rakuos-base/build_files/nvidia.sh)
+# Base image packages (Updated for RakuOS Hyprland Multimedia stack)
 dkms-nvidia
 nvidia-driver
 nvidia-modprobe
 nvidia-settings
-libnvidia-gpucomp
-libnvidia-cfg
-libnvidia-ml
+nvidia-driver-cuda
 nvidia-persistenced
 libva-nvidia-driver
+intel-vaapi-driver
+libva-utils
+heif-pixbuf-loader
 EOF
 
 echo "protected-packages.txt ready ($(grep -c '^[^#]' "$PROTECTED_FILE") packages)."
