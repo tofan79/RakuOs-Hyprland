@@ -20,24 +20,23 @@ dnf5 -y copr enable mindset/Mindset-Apps 2>/dev/null || echo "Warning: Failed to
 ## Install packages — Pure Hyprland edition
 rum install -y \
   hyprland cliphist xdg-desktop-portal-hyprland \
-  hyprland-contrib hyprland-qt-support \
+  hyprland-qt-support \
   hyprsysteminfo hyprtoolkit gpu-screen-recorder nwg-look matugen \
   sddm-x11 \
-  vim ripgrep sqlite3 lazygit \
   grim slurp tesseract tesseract-langpack-eng zbar \
   switcheroo-control \
   brightnessctl ddcutil power-profiles-daemon \
   playerctl alsa-utils pavucontrol \
   gstreamer1-plugins-base gstreamer1-plugins-good \
-  gstreamer1-plugins-bad-free gstreamer1-plugins-ugly-free gstreamer1-plugin-libav \
+  gstreamer1-plugins-bad-free gstreamer1-plugins-ugly-free \
   x264 x265 \
   qt5ct qt6ct qt6-qtwayland papirus-icon-theme \
   exfatprogs ntfs-3g btrfs-progs cifs-utils dosfstools \
   jetbrains-mono-fonts google-noto-color-emoji-fonts adobe-source-code-pro-fonts \
-  dbus-tools logrotate gnome-keyring NetworkManager-openvpn \
-  NetworkManager-adsl NetworkManager-bluetooth NetworkManager-ppp NetworkManager-wwan \
-  zsh \
-  ${RAKUOS_RELEASE_PKG} rakuos-software-gtk rakuos-welcome-gtk \
+  dbus-tools logrotate gnome-keyring \
+  NetworkManager-wifi NetworkManager-bluetooth NetworkManager-config-connectivity-fedora NetworkManager-wwan \
+  nautilus pipewire wireplumber gvfs-nfs gvfs-fuse gvfs-smb gvfs gvfs-mtp gnome-disk-utility gnome-calculator fprintd-pam ibus-mozc ibus-unikey \
+  ${RAKUOS_RELEASE_PKG} rakuos-software-qt rakuos-welcome-gtk \
   systemd-oomd-defaults xdg-desktop-portal xdg-desktop-portal-gtk xdg-user-dirs-gtk
 
 ## Remove fedora wallpapers
