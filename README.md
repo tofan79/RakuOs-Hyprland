@@ -74,16 +74,10 @@ env = [
 - gpu-screen-recorder, nwg-look, matugen
 
 ### Display Manager
-- sddm, sddm-kcm
+- sddm
 
 ### Screenshot & OCR
 - grim, slurp, tesseract, tesseract-langpack-eng, zbar
-
-### Dev Tools
-- @development-tools, cmake, meson, ninja-build
-
-### System Tools
-- fd-find, tree, bc, lsof, hwinfo, smartmontools, wget2
 
 ### Hardware & Power
 - switcheroo-control, brightnessctl, ddcutil, power-profiles-daemon

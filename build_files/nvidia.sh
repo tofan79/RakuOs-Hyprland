@@ -11,7 +11,6 @@ rum install -y --setopt=tsflags=noscripts \
     --exclude=libnvidia-gpucomp-580xx \
     --exclude=nvidia-driver-580xx-cuda-libs \
     --exclude=libnvidia-ml-580xx \
-    intel-vaapi-driver \
     libva-utils \
     heif-pixbuf-loader \
     dkms-nvidia \
@@ -132,7 +131,6 @@ nvidia-settings
 nvidia-driver-cuda
 nvidia-persistenced
 libva-nvidia-driver
-intel-vaapi-driver
 libva-utils
 heif-pixbuf-loader
 EOF

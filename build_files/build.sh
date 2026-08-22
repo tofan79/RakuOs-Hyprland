@@ -32,6 +32,7 @@ rum install -y \
   hyprland-contrib hyprland-qt-support \
   hyprsysteminfo hyprtoolkit gpu-screen-recorder nwg-look matugen \
   sddm \
+  vim ripgrep sqlite3 lazygit \
   grim slurp tesseract tesseract-langpack-eng zbar \
   switcheroo-control \
   brightnessctl ddcutil power-profiles-daemon \

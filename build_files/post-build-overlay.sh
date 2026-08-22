@@ -167,6 +167,10 @@ NetworkManager-bluetooth
 NetworkManager-ppp
 NetworkManager-wwan
 zsh
+vim
+ripgrep
+sqlite3
+lazygit
 rakuos-release
 rakuos-software-gtk
 rakuos-welcome-gtk
