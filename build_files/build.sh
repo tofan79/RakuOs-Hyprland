@@ -17,21 +17,12 @@ echo "Enabling COPR repos..."
 dnf5 -y copr enable lionheartp/Hyprland 2>/dev/null || echo "Warning: Failed to enable Hyprland COPR"
 dnf5 -y copr enable mindset/Mindset-Apps 2>/dev/null || echo "Warning: Failed to enable Mindset-Apps COPR"
 
-# Set COPR priority to 20 (below RakuOS v3=10, above default=99)
-for repo_file in /etc/yum.repos.d/_copr_lionheartp-Hyprland.repo /etc/yum.repos.d/_copr_lionheartp-Hyprland-*.repo; do
-    [[ -f "$repo_file" ]] && sed -i 's/^priority=.*/priority=20/' "$repo_file"
-done
-
-for repo_file in /etc/yum.repos.d/_copr_mindset-Mindset-Apps.repo /etc/yum.repos.d/_copr_mindset-Mindset-Apps-*.repo; do
-    [[ -f "$repo_file" ]] && sed -i 's/^priority=.*/priority=20/' "$repo_file"
-done
-
 ## Install packages — Pure Hyprland edition
 rum install -y \
   hyprland cliphist xdg-desktop-portal-hyprland \
   hyprland-contrib hyprland-qt-support \
   hyprsysteminfo hyprtoolkit gpu-screen-recorder nwg-look matugen \
-  sddm \
+  sddm-x11 \
   vim ripgrep sqlite3 lazygit \
   grim slurp tesseract tesseract-langpack-eng zbar \
   switcheroo-control \
@@ -53,7 +44,7 @@ rum install -y \
 rm -r /usr/share/backgrounds/fedora-workstation/
 
 ## Remove fish shell and wofi (not needed with Noctalia)
-dnf5 remove -y fish wofi kitty hyprpicker grimblast || true
+dnf5 remove -y fish wofi firefox hyprpicker grimblast || true
 
 ## Unlock keyring on login
 sed -i -E 's/^-([a-z]+[[:space:]]+.*pam_gnome_keyring\.so)/\1/' /etc/pam.d/sddm

@@ -126,7 +126,7 @@ hyprtoolkit
 gpu-screen-recorder
 nwg-look
 matugen
-sddm
+sddm-x11
 grim
 slurp
 tesseract
