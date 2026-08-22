@@ -42,7 +42,7 @@ rum install -y \
   wlsunset qt5ct qt6ct qt6-qtwayland papirus-icon-theme \
   exfatprogs ntfs-3g btrfs-progs cifs-utils dosfstools \
   jetbrains-mono-fonts google-noto-color-emoji-fonts adobe-source-code-pro-fonts \
-  dbus-tools logrotate gnome-keyring networkmanager-openvpn zram-generator-defaults \
+  dbus-tools logrotate gnome-keyring NetworkManager-openvpn zram-generator-defaults \
   NetworkManager-adsl NetworkManager-bluetooth NetworkManager-ppp NetworkManager-wwan \
   kitty nautilus \
   ${RAKUOS_RELEASE_PKG} rakuos-software-gtk rakuos-welcome-gtk \
